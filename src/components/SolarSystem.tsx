@@ -248,9 +248,8 @@ const createOrbitRing = (planetData: Planet, config: SolarSystemConfig) => {
   return ring;
 };
 
-const createAsteroidBelt = (config: SolarSystemConfig) => {
+const createAsteroidBelt = (config: SolarSystemConfig, asteroidCount: number, viewMode: ViewMode) => {
   const asteroidBelt = new THREE.Group();
-  const asteroidCount = 3000;
   const asteroidGeometries = [
     new THREE.DodecahedronGeometry(0.3),
     new THREE.IcosahedronGeometry(0.3),
@@ -260,7 +259,7 @@ const createAsteroidBelt = (config: SolarSystemConfig) => {
 
   for (let i = 0; i < asteroidCount; i++) {
     const geometry = asteroidGeometries[Math.floor(Math.random() * asteroidGeometries.length)].clone();
-    const scale = 1.0 + Math.random() * 2.5;
+    const scale = viewMode === 'scientific' ? 2.0 + Math.random() * 4.0 : 1.0 + Math.random() * 2.5;
     geometry.scale(scale, scale, scale);
     
     const positions = geometry.attributes.position.array as Float32Array;
@@ -698,7 +697,7 @@ const SolarSystem: React.FC = () => {
     scene.add(directionalLight);
 
     // Create asteroid belt
-    const asteroidBelt = createAsteroidBelt(config);
+    const asteroidBelt = createAsteroidBelt(config, viewMode === 'scientific' ? 12000 : 2000, viewMode);
     asteroidBeltRef.current = asteroidBelt;
     scene.add(asteroidBelt);
 
